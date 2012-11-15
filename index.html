@@ -33,7 +33,7 @@ $(document).ready(function(){
         return 'tiles/' + zoom + '/tile' + x + '_' + y + '.png';
     };
     var MyMap = new BMap.MapType('MyMap', tileLayer, {minZoom: 5, maxZoom: 8});
-    map = new BMap.Map('map', {mapType: MyMap,enableAutoResize:true});
+    var map = new BMap.Map('map', {mapType: MyMap,enableAutoResize:true});
     map.addControl(new BMap.NavigationControl({showZoomInfo:false}));
     map.addEventListener('addcontrol',function(evt){
         if (evt.target._className==="CopyrightControl"||

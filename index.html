@@ -1,50 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html manifest="index.manifest">
 <head>
-<title>DOL Map</title>
+<title>大航海时代OL任务助手</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<style type="text/css">
-    html,body
-    {
-        padding: 0px;
-        margin: 0px;
-    }
-</style>
-<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery/jquery-1.8.2.min.js"></script>
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.3"></script>
+<meta name="keywords" content="大航海时代OL任务助手,大航海时代,大航海时代OL,大航海时代OL地图,任务"/>
+<meta name="description" content="大航海时代OL任务助手,大航海时代OL任务查询,大航海时代OL城市查询,大航海时代OL地图"/>
+<link href="http://lib.sinaapp.com/js/bootstrap/2.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="statics/css/app.css" rel="stylesheet" media="screen">
+<link href="http://dolmap.duapp.com/statics/flexigrid/css/flexigrid.pack.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.8.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://dolmap.duapp.com/statics/flexigrid/js/flexigrid.pack.js"></script>
+<script type="text/javascript" src="http://dolmap.duapp.com/statics/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="statics/js/app.min.js"></script>
 </head>
 <body>
-<div id="map" style="width:100%;"></div>
-<script type="text/javascript">
-
-$(document).ready(function(){
-    $("#map").height($(window).height());
-    var tileLayer = new BMap.TileLayer();
-    tileLayer.getTilesUrl = function(tileCoord, zoom) {
-        var x = tileCoord.x;
-        var y = tileCoord.y;
-        var maxX=Math.pow(2,zoom-MyMap.getMinZoom());
-        var minX=-maxX;
-        var warp=2*maxX;
-        while(x>=maxX)
-        x-=warp;
-        while(x<minX)
-        x+=warp;
-        return 'tiles/' + zoom + '/tile' + x + '_' + y + '.png';
-    };
-    var MyMap = new BMap.MapType('MyMap', tileLayer, {minZoom: 5, maxZoom: 8});
-    map = new BMap.Map('map', {mapType: MyMap,enableAutoResize:true});
-    map.addControl(new BMap.NavigationControl({showZoomInfo:false}));
-    map.addEventListener('addcontrol',function(evt){
-        if (evt.target._className==="CopyrightControl"||
-            evt.target.IMG_URL==="http://api.map.baidu.com/images/copyright_logo.png"){
-            map.removeControl(evt.target);
-        }
-    });
-    map.centerAndZoom(new BMap.Point(24, 0.4), 7);
-    map.enableScrollWheelZoom();
-    map.enableInertialDragging();
-});
-</script>
+    <div id="screen" class="container-fluid">
+      <div class="row-fluid main">
+        <div class="span3">
+            <form class="search">
+                <fieldset>
+                    <legend>任务查询</legend>
+                    <label for='questSearch'>快速查询：</label>
+                    <input id="questSearch" type="text" placeholder="请输入任务首字母或发现物" tabindex='1'/>
+                    <input class="btn btn-mini quest-clear-btn" type='button' value='清空'/>
+                    <div class="alert alert-info">
+                        输入任务名称拼音首字母试试看
+                    </div>
+                    <div class="accordion" id="questInfoPanel">
+                    </div>
+                </fieldset>
+                <fieldset id="searchPosition">
+                    <legend>地点查询</legend>
+                    <label>快速定位：</label>
+                    <input class="citySearch" type="text" placeholder="请输入城市名称或首字母" tabindex='2'/>
+                    <input class="btn btn-mini city-clear-btn" type='button' value='清空'/>
+                    <div class="alert alert-info">
+                        任务辐射展示的线路可以点击
+                    </div>
+                    <div class="accordion" id="cityInfoPanel">
+                </fieldset>
+                <input type='button' class="btn btn-mini btn-primary quest-search-btn"  value='条件查询'/>
+                <input type='button' class="btn btn-mini update-info-btn" value='更新一览'/>
+                <div class="friends">
+                  <span>友情链接：</span>
+                  <a href="http://www.dahanghai.org/" target='_blank'>大航海时代ol英国国家地理</a>
+                </div>
+            </form>
+        </div>
+        <div class="span9">
+            <div id="map" class="map-container"></div>
+        </div>
+      </div>
+    </div>
+    <div id="update-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">更新一览</h3>
+      </div>
+      <div class="modal-body">
+        <h3>2013-2-12</h3>
+        <ul>
+            <li>UPDATE：台服翻译与国服翻译匹配</li>
+        </ul>
+        <h3>2013-2-8</h3>
+        <ul>
+            <li>UPDATE：更新任务数据</li>
+        </ul>
+        <h3>2013-2-5</h3>
+        <ul>
+            <li>NEW：城市任务辐射图功能</li>
+            <li>NEW：任务路径在地图上展示</li>
+        </ul>
+        <h3>2013-1-27</h3>
+        <ul>
+            <li>UPDATE：条件查询可以由任务完成城市发起</li>
+            <li>UPDATE：顺路查询可以限制任务星级</li>
+        </ul>
+        <h3>2013-1-25</h3>
+        <ul>
+            <li>NEW：加入条件查询功能 <b>Beta</b></li>
+        </ul>
+        <h3>2013-1-24</h3>
+        <ul>
+            <li>NEW：加入顺路任务查询功能 <b>Beta</b></li>
+        </ul>
+        <h3>2013-1-20</h3>
+        <ul>
+            <li>BUG：修正技能数据</li>
+            <li>NEW：加入网页缓存功能</li>
+            <li>NEW：加入查询缓存功能</li>
+            <li>UPDATE：改进任务切换交互效果</li>
+            <li>NEW：大航海时代OL地图查询</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+      </div>
+    </div>
+    <div class="modal hide fade" id="sim-grid-dialog" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="false">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 class='quest-name modal-title'>顺路任务</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row-fluid">
+          <div class="span4">
+            <label>选择当前任务接受点</label>
+            <select class="startSelect" ></select>
+          </div>
+          <div class="span4">
+            <label>任务星级高于</label>
+            <select class="fromStar" ></select>
+          </div>
+          <div class="span4">
+            <label>任务星级低于</label>
+            <select class="toStar" ></select>
+          </div>                    
+        </div>
+        <label>任务路径：</label><span id="quest-route"></span>
+        <table id="sim-grid" style="display:none;"></table>
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" aria-hidden="true" class="btn">关闭</a>
+      </div>
+    </div>
+    <div class="modal hide fade" id="quest-grid-dialog" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="false">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 class='modal-title'>任务查询</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row-fluid">
+          <div class="span6">
+            <label>任务接受点</label>
+            <input class="citySearch startRoute" type="text" placeholder="请输入城市名称或首字母" tabindex='3'/>
+          </div>
+          <div class="span6">
+            <label>任务完成点</label>
+            <input class="citySearch endRoute" type="text" placeholder="请输入城市名称或首字母" tabindex='4'/>
+          </div>
+          <div class="row-fluid">
+            <div class="span12">
+              <table id="quest-grid" style="display:none;"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" data-dismiss="modal" aria-hidden="true" class="btn">关闭</a>
+      </div>
+    </div> 
+    <div class='hide'>
+      <script type="text/javascript">
+        var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+        document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F3eb619177505515e8402c7fc72b9021e' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+    </div>
 </body>
 </html>

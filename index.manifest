@@ -1,0 +1,18 @@
+CACHE MANIFEST
+
+# VERSION 0.4.120
+
+# 直接缓存的文件
+CACHE:
+#statics/js/jquery-1.8.2.min.js
+#statics/bootstrap/js/bootstrap.min.js
+#statics/bootstrap/css/bootstrap.min.css
+#statics/bootstrap/img/glyphicons-halflings-white.png
+#statics/bootstrap/img/glyphicons-halflings.png
+#statics/flexigrid/js/flexigrid.pack.js
+#statics/flexigrid/css/flexigrid.pack.css
+statics/js/app.min.js
+statics/css/app.css
+
+NETWORK:
+*

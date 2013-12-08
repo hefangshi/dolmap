@@ -1,0 +1,12 @@
+# compress
+FilterProvider compress1 DEFLATE resp=CONTENT-TYPE /application/json/
+FilterChain compress1
+FilterProvider compress2 DEFLATE resp=CONTENT-TYPE /text/javascript/
+FilterChain compress2
+FilterProvider compress3 DEFLATE resp=CONTENT-TYPE /text/css/
+FilterChain compress3
+FilterProvider compress4 DEFLATE resp=CONTENT-TYPE /text/html/
+FilterChain compress4
+FilterProvider compress5 DEFLATE resp=CONTENT-TYPE /application/javascript/
+FilterChain compress5
+

@@ -1,0 +1,9 @@
+name: dolmap
+version: 1
+handle:
+
+- compress: if ( out_header["Content-type"] ~ "application/json" ) compress
+- compress: if ( out_header["Content-type"] ~ "text/javascript" ) compress
+- compress: if ( out_header["Content-type"] ~ "text/css" ) compress
+- compress: if ( out_header["Content-type"] ~ "text/html" ) compress
+- compress: if ( out_header["Content-type"] ~ "application/javascript" ) compress
